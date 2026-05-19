@@ -39,7 +39,7 @@
       top: 0;
       z-index: 100;
     }
-    .logo { height: 30px; width: auto; }
+    .logo { height: 44px; width: auto; }
 
     /* ── HERO: 2 colunas ── */
     .hero {
@@ -86,29 +86,16 @@
     }
 
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,94,0,.1);
-      border: 1px solid rgba(255,94,0,.25);
-      color: var(--orange);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 99px;
-      margin-bottom: 24px;
-    }
-    .hero-badge .dot {
-      width: 7px; height: 7px;
+      display: inline-block;
       background: var(--orange);
-      border-radius: 50%;
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: .5; transform: scale(.7); }
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 6px;
+      margin-bottom: 24px;
     }
 
     .hero-text h1 {
@@ -182,25 +169,16 @@
     .hcard-dots span:nth-child(3) { background: #28C840; }
 
     .hcard-live {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-block;
       font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .08em;
+      font-weight: 800;
+      letter-spacing: .1em;
       text-transform: uppercase;
       color: #4ADE80;
       background: rgba(74,222,128,.1);
       border: 1px solid rgba(74,222,128,.2);
       padding: 4px 10px;
-      border-radius: 99px;
-    }
-    .hcard-live::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: #4ADE80;
-      border-radius: 50%;
-      animation: pulse-dot 1.5s ease-in-out infinite;
+      border-radius: 6px;
     }
 
     .hcard-main-label {
@@ -695,13 +673,13 @@
 
     /* ── FOOTER ── */
     footer {
-      background: var(--black);
-      border-top: 1px solid #1c1c1c;
+      background: var(--white);
+      border-top: 1px solid var(--border);
       padding: 28px 32px;
       text-align: center;
     }
     footer img { margin: 0 auto 12px; }
-    footer p { font-size: .73rem; color: #3f3f46; line-height: 1.6; }
+    footer p { font-size: .73rem; color: #A1A1AA; line-height: 1.6; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 880px) {
@@ -733,10 +711,7 @@
 
       <!-- Texto -->
       <div class="hero-text">
-        <div class="hero-badge">
-          <span class="dot"></span>
-          Diagnóstico Gratuito
-        </div>
+        <div class="hero-badge">Diagnóstico Gratuito</div>
         <h1>
           Pare de pagar preço de engenharia para fazer
           <span>trabalho de cadista.</span>
@@ -780,21 +755,6 @@
             </div>
             <div class="hcard-bar-track dark">
               <div class="hcard-bar-fill" id="bar-valor" style="width:0%"></div>
-            </div>
-          </div>
-
-          <div class="hcard-grid">
-            <div class="hcard-kpi">
-              <div class="hcard-kpi-val">N × S</div>
-              <div class="hcard-kpi-label">Custo equipe</div>
-            </div>
-            <div class="hcard-kpi">
-              <div class="hcard-kpi-val orange">40%</div>
-              <div class="hcard-kpi-label">Desperdício</div>
-            </div>
-            <div class="hcard-kpi">
-              <div class="hcard-kpi-val">÷ P</div>
-              <div class="hcard-kpi-label">Por projeto</div>
             </div>
           </div>
 
@@ -981,9 +941,9 @@
     const leadEmail = urlParams.get('email') || '';
 
     // ── ANIMAÇÃO DO HERO: contador ao vivo ──
-    // Desperdício médio simulado: R$ 4.000/mês por equipe de referência
-    // = R$ 133/dia = R$ 0,0556/seg
-    const DESPERDICIO_DIA = 133;
+    // Desperdício médio simulado: R$ 75.000/mês por equipe de referência
+    // = R$ 2.500/dia — mostra centenas ao longo do dia útil
+    const DESPERDICIO_DIA = 2500;
     const horaInicio = 8; // 08h00
     const agora = new Date();
     const segundosDesde8h = Math.max(0,
