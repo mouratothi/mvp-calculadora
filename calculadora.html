@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Vazamento de Hora Técnica — Woca</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800,900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:  #FF5E00;
+      --black:   #0A0A0A;
+      --wdark:   #27272A;
+      --mid:     #71717A;
+      --border:  #E4E4E7;
+      --bg:      #FAFAFA;
+      --white:   #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Switzer', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER: claro ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { height: 30px; width: auto; }
+
+    /* ── HERO: 2 colunas ── */
+    .hero {
+      background: var(--black);
+      padding: 56px 32px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* grid sutil de fundo */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* brilho laranja ambiente */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,94,0,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,94,0,.1);
+      border: 1px solid rgba(255,94,0,.25);
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 99px;
+      margin-bottom: 24px;
+    }
+    .hero-badge .dot {
+      width: 7px; height: 7px;
+      background: var(--orange);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(.7); }
+    }
+
+    .hero-text h1 {
+      font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.08;
+      letter-spacing: -.03em;
+      margin-bottom: 18px;
+    }
+    .hero-text h1 span { color: var(--orange); }
+
+    .hero-text p {
+      font-size: .95rem;
+      color: #A1A1AA;
+      line-height: 1.65;
+      max-width: 420px;
+      border-left: 2px solid rgba(255,94,0,.3);
+      padding-left: 16px;
+    }
+
+    /* ── HERO VISUAL: card animado ── */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* cartão de fundo para profundidade */
+    .hero-card-back {
+      position: absolute;
+      inset: 0;
+      background: #141414;
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 20px;
+      transform: rotate(2.5deg) scale(.96);
+      z-index: 0;
+    }
+
+    .hero-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      background: #111;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .hcard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .hcard-dots { display: flex; gap: 6px; }
+    .hcard-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .hcard-dots span:nth-child(1) { background: #FF5F57; }
+    .hcard-dots span:nth-child(2) { background: #FEBC2E; }
+    .hcard-dots span:nth-child(3) { background: #28C840; }
+
+    .hcard-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #4ADE80;
+      background: rgba(74,222,128,.1);
+      border: 1px solid rgba(74,222,128,.2);
+      padding: 4px 10px;
+      border-radius: 99px;
+    }
+    .hcard-live::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: #4ADE80;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    .hcard-main-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #52525B;
+      margin-bottom: 6px;
+    }
+    .hcard-counter {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -.04em;
+      line-height: 1;
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .hcard-counter-sub {
+      font-size: .72rem;
+      color: #52525B;
+      margin-bottom: 20px;
+    }
+
+    .hcard-bar-wrap {
+      margin-bottom: 20px;
+    }
+    .hcard-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      font-weight: 600;
+      color: #71717A;
+      margin-bottom: 6px;
+    }
+    .hcard-bar-track {
+      height: 6px;
+      background: rgba(255,255,255,.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .hcard-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--orange);
+      width: 0;
+      transition: width 2s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .hcard-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.3) 50%, transparent 100%);
+      animation: shimmer 2s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .hcard-bar-track.dark .hcard-bar-fill { background: #3f3f46; width: 0; }
+
+    .hcard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .hcard-kpi {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      transition: border-color .2s;
+    }
+    .hcard-kpi:hover { border-color: rgba(255,94,0,.3); }
+    .hcard-kpi-val {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -.02em;
+    }
+    .hcard-kpi-val.orange { color: var(--orange); }
+    .hcard-kpi-label {
+      font-size: .65rem;
+      font-weight: 600;
+      color: #52525B;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-top: 3px;
+    }
+
+    .hcard-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255,94,0,.07);
+      border: 1px dashed rgba(255,94,0,.25);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: .04em;
+    }
+
+    /* ── CALCULATOR SECTION ── */
+    .calc-section {
+      padding: 64px 32px 80px;
+    }
+    .calc-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .calc-header {
+      margin-bottom: 40px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 900;
+      color: var(--black);
+      letter-spacing: -.025em;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: .9rem;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    /* 2 colunas no desktop */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── FORM ── */
+    .form-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+      position: sticky;
+      top: 80px;
+    }
+
+    .field { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 7px;
+    }
+    label .hint { font-weight: 500; color: var(--mid); margin-left: 3px; }
+
+    .input-wrap { position: relative; }
+    .input-prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--mid);
+      pointer-events: none;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Switzer', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--black);
+      -moz-appearance: textfield;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input[type="number"].has-prefix { padding-left: 34px; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"]:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(255,94,0,.1);
+      background: var(--white);
+    }
+    input[type="number"].error {
+      border-color: #EF4444;
+      box-shadow: 0 0 0 3px rgba(239,68,68,.1);
+    }
+
+    .field-hint  { font-size: .73rem; color: var(--mid); margin-top: 5px; line-height: 1.5; }
+    .field-error { font-size: .73rem; color: #EF4444; margin-top: 5px; display: none; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: var(--orange);
+      color: var(--white);
+      font-family: 'Switzer', sans-serif;
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      box-shadow: 0 6px 20px rgba(255,94,0,.28);
+    }
+    .btn-primary:hover {
+      background: #e85400;
+      box-shadow: 0 8px 24px rgba(255,94,0,.36);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled {
+      background: #D4D4D8; box-shadow: none; cursor: not-allowed; transform: none;
+    }
+
+    .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2.5px solid rgba(255,255,255,.3);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-primary.loading .spinner  { display: block; }
+    .btn-primary.loading .btn-text { display: none; }
+
+    /* ── RESULTS PANEL ── */
+    .results-panel {
+      min-height: 400px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      background: var(--white);
+      border: 1.5px dashed var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+      transition: opacity .3s;
+    }
+    .empty-state.hidden { display: none; }
+
+    .empty-icon {
+      width: 52px; height: 52px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1.4rem;
+    }
+    .empty-state h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    .empty-state p {
+      font-size: .82rem;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 260px;
+    }
+
+    /* Ghost skeleton */
+    .ghost-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      margin-top: 24px;
+    }
+    .ghost-card {
+      height: 72px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      animation: ghost-pulse 2s ease-in-out infinite;
+    }
+    .ghost-card:nth-child(3) { grid-column: span 2; height: 48px; }
+    @keyframes ghost-pulse {
+      0%,100% { opacity: .5; }
+      50%      { opacity: 1; }
+    }
+
+    /* Results filled */
+    #results-filled {
+      display: none;
+      animation: fadeUp .4s ease both;
+    }
+    #results-filled.visible { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-hero {
+      background: var(--black);
+      border-radius: 18px;
+      padding: 28px 26px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .result-hero .rlabel {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #71717A;
+      margin-bottom: 10px;
+    }
+    .result-hero .rnumber {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -.04em;
+      line-height: 1;
+    }
+    .result-hero .rsub {
+      font-size: .82rem;
+      color: #A1A1AA;
+      margin-top: 10px;
+      line-height: 1.55;
+    }
+    .result-hero .rsub strong { color: var(--white); }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .result-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .rc-label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 6px;
+    }
+    .rc-val {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--black);
+      letter-spacing: -.02em;
+    }
+    .rc-desc {
+      font-size: .7rem;
+      color: var(--mid);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .result-insight {
+      background: #FFF7F2;
+      border: 1px solid #FFD5B8;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      font-size: .84rem;
+      color: #7C2D12;
+      line-height: 1.6;
+    }
+    .result-insight strong { color: #C2410C; }
+
+    .btn-whatsapp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: #16A34A;
+      color: var(--white);
+      font-family: 'Switzer', sans-serif;
+      font-size: .88rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      box-shadow: 0 6px 20px rgba(22,163,74,.28);
+    }
+    .btn-whatsapp:hover {
+      background: #15803D;
+      box-shadow: 0 8px 24px rgba(22,163,74,.36);
+      transform: translateY(-1px);
+    }
+    .btn-whatsapp:active { transform: translateY(0); }
+    .wa-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .recalc-link {
+      display: block;
+      text-align: center;
+      margin-top: 14px;
+      font-size: .8rem;
+      color: var(--mid);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      background: none;
+      border: none;
+      font-family: 'Switzer', sans-serif;
+    }
+    .recalc-link:hover { color: var(--black); }
+
+    /* ── HOW IT WORKS ── */
+    .how-section {
+      background: var(--black);
+      padding: 64px 32px;
+    }
+    .how-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .how-inner .section-label { color: var(--orange); }
+    .how-inner .section-title { color: var(--white); margin-bottom: 36px; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .step {
+      background: #111;
+      border: 1px solid #1f1f1f;
+      border-radius: 16px;
+      padding: 24px 20px;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: .75rem;
+      font-weight: 900;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    .step p { font-size: .82rem; color: #A1A1AA; line-height: 1.6; }
+    .step p strong { color: var(--white); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid #1c1c1c;
+      padding: 28px 32px;
+      text-align: center;
+    }
+    footer img { margin: 0 auto 12px; }
+    footer p { font-size: .73rem; color: #3f3f46; line-height: 1.6; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 880px) {
+      .hero-inner  { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .calc-grid   { grid-template-columns: 1fr; }
+      .form-card   { position: static; }
+      .steps       { grid-template-columns: 1fr; }
+      .result-grid { grid-template-columns: 1fr; }
+      .ghost-cards { grid-template-columns: 1fr; }
+      .ghost-card:nth-child(3) { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header>
+    <img
+      src="https://i.ibb.co/whcj7p5t/woca-by-ocalev1.png"
+      alt="Woca by Ocalev"
+      class="logo"
+    />
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-inner">
+
+      <!-- Texto -->
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Diagnóstico Gratuito
+        </div>
+        <h1>
+          Pare de pagar preço de engenharia para fazer
+          <span>trabalho de cadista.</span>
+        </h1>
+        <p>
+          Descubra em menos de 1 minuto quanto sua empresa perde por mês
+          com tarefas que já deveriam ser automatizadas.
+        </p>
+      </div>
+
+      <!-- Card animado -->
+      <div class="hero-visual">
+        <div class="hero-card-back"></div>
+        <div class="hero-card">
+
+          <div class="hcard-header">
+            <div class="hcard-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="hcard-live">Ao Vivo</div>
+          </div>
+
+          <div class="hcard-main-label">Custo desperdiçado hoje</div>
+          <div class="hcard-counter" id="live-counter">R$ 0,00</div>
+          <div class="hcard-counter-sub">acumulado desde 08h00 · atualizado em tempo real</div>
+
+          <div class="hcard-bar-wrap">
+            <div class="hcard-bar-label">
+              <span>Horas em trabalho manual</span>
+              <span style="color:var(--orange);">40%</span>
+            </div>
+            <div class="hcard-bar-track">
+              <div class="hcard-bar-fill" id="bar-manual" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="hcard-bar-wrap">
+            <div class="hcard-bar-label">
+              <span>Horas em trabalho de valor</span>
+              <span>60%</span>
+            </div>
+            <div class="hcard-bar-track dark">
+              <div class="hcard-bar-fill" id="bar-valor" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="hcard-grid">
+            <div class="hcard-kpi">
+              <div class="hcard-kpi-val">N × S</div>
+              <div class="hcard-kpi-label">Custo equipe</div>
+            </div>
+            <div class="hcard-kpi">
+              <div class="hcard-kpi-val orange">40%</div>
+              <div class="hcard-kpi-label">Desperdício</div>
+            </div>
+            <div class="hcard-kpi">
+              <div class="hcard-kpi-val">÷ P</div>
+              <div class="hcard-kpi-label">Por projeto</div>
+            </div>
+          </div>
+
+          <div class="hcard-status">
+            ⚠ Diagnóstico da sua empresa pendente
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── CALCULADORA ── -->
+  <section class="calc-section">
+    <div class="calc-inner">
+
+      <div class="calc-header">
+        <p class="section-label">Calculadora</p>
+        <h2 class="section-title">Qual é o seu vazamento?</h2>
+        <p class="section-sub">Preencha os 3 campos com os dados da sua equipe. O diagnóstico aparece ao lado.</p>
+      </div>
+
+      <div class="calc-grid">
+
+        <!-- Formulário -->
+        <div class="form-card">
+
+          <div class="field">
+            <label for="input-n">
+              Nº de projetistas / engenheiros
+              <span class="hint">(na equipe)</span>
+            </label>
+            <div class="input-wrap">
+              <input type="number" id="input-n" placeholder="Ex: 3" min="1" step="1" />
+            </div>
+            <p class="field-hint">Pessoas que executam projetos elétricos no dia a dia.</p>
+            <p class="field-error" id="err-n">Informe um número maior que zero.</p>
+          </div>
+
+          <div class="field">
+            <label for="input-s">
+              Custo real por profissional
+              <span class="hint">(R$/mês)</span>
+            </label>
+            <div class="input-wrap">
+              <span class="input-prefix">R$</span>
+              <input type="number" id="input-s" class="has-prefix" placeholder="Ex: 8000" min="1" step="100" />
+            </div>
+            <p class="field-hint">Salário bruto + encargos (CLT ≈ 1,7× o salário líquido).</p>
+            <p class="field-error" id="err-s">Informe um valor maior que zero.</p>
+          </div>
+
+          <div class="field">
+            <label for="input-p">
+              Projetos entregues por mês
+              <span class="hint">(pela equipe)</span>
+            </label>
+            <div class="input-wrap">
+              <input type="number" id="input-p" placeholder="Ex: 10" min="1" step="1" />
+            </div>
+            <p class="field-hint">Média mensal de projetos finalizados por toda a equipe.</p>
+            <p class="field-error" id="err-p">Informe um número maior que zero.</p>
+          </div>
+
+          <hr class="divider" />
+
+          <button class="btn-primary" id="btn-calcular" onclick="calcular()">
+            <span class="btn-text">Calcular meu diagnóstico →</span>
+            <span class="spinner"></span>
+          </button>
+
+        </div>
+
+        <!-- Painel de resultados -->
+        <div class="results-panel">
+
+          <!-- Empty state -->
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>Seu diagnóstico aparece aqui</h3>
+            <p>Preencha os campos ao lado e clique em calcular para descobrir o vazamento da sua equipe.</p>
+            <div class="ghost-cards">
+              <div class="ghost-card"></div>
+              <div class="ghost-card"></div>
+              <div class="ghost-card"></div>
+            </div>
+          </div>
+
+          <!-- Resultados preenchidos -->
+          <div id="results-filled">
+
+            <div class="result-hero">
+              <p class="rlabel">Desperdício mensal estimado</p>
+              <p class="rnumber" id="res-desperdicio">R$ 0</p>
+              <p class="rsub" id="res-context"></p>
+            </div>
+
+            <div class="result-grid">
+              <div class="result-card">
+                <p class="rc-label">Custo total da equipe</p>
+                <p class="rc-val" id="res-custo-total">R$ 0</p>
+                <p class="rc-desc" id="res-custo-desc"></p>
+              </div>
+              <div class="result-card">
+                <p class="rc-label">Desperdício por projeto</p>
+                <p class="rc-val" id="res-por-projeto">R$ 0</p>
+                <p class="rc-desc" id="res-projeto-desc"></p>
+              </div>
+            </div>
+
+            <div class="result-insight" id="res-insight"></div>
+
+            <a
+              id="btn-whatsapp"
+              href="#"
+              class="btn-whatsapp"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="dispararWebhookWhatsapp()"
+            >
+              <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Quero eliminar esse desperdício
+            </a>
+
+            <button class="recalc-link" onclick="resetForm()">
+              ← Recalcular com outros valores
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COMO FUNCIONA ── -->
+  <section class="how-section">
+    <div class="how-inner">
+      <p class="section-label">Como funciona</p>
+      <h2 class="section-title">O que o Woca faz pela sua equipe</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <p><strong>Importe a planta DXF</strong> e o Woca posiciona os pontos elétricos automaticamente.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p><strong>Dimensionamento automático</strong> de fiação, condutos, quadro de cargas e diagrama unifilar.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p><strong>Entregue mais projetos</strong> no mesmo tempo, com mais precisão e menos retrabalho.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <img
+      src="https://i.ibb.co/whcj7p5t/woca-by-ocalev1.png"
+      alt="Woca by Ocalev"
+      style="height:22px;"
+    />
+    <p>
+      © 2026 Ocalev. Todos os direitos reservados.<br>
+      Alameda Apolinário Moreira da Costa, 51 Sala 1, Marco — Belém/PA
+    </p>
+  </footer>
+
+  <script>
+    // ─────────────────────────────────────────────
+    // CONFIGURAÇÃO — preencha antes de publicar
+    // ─────────────────────────────────────────────
+    const WEBHOOK_URL_CALCULAR = 'COLE_AQUI_A_URL_DO_WEBHOOK_1_DO_MAKE';
+    const WEBHOOK_URL_WHATSAPP = 'COLE_AQUI_A_URL_DO_WEBHOOK_2_DO_MAKE';
+    const WHATSAPP_NUMERO      = '5511959315332'; // Felipe
+    // ─────────────────────────────────────────────
+
+    // Lê o e-mail injetado via ?email=... na URL (Brevo)
+    const urlParams = new URLSearchParams(window.location.search);
+    const leadEmail = urlParams.get('email') || '';
+
+    // ── ANIMAÇÃO DO HERO: contador ao vivo ──
+    // Desperdício médio simulado: R$ 4.000/mês por equipe de referência
+    // = R$ 133/dia = R$ 0,0556/seg
+    const DESPERDICIO_DIA = 133;
+    const horaInicio = 8; // 08h00
+    const agora = new Date();
+    const segundosDesde8h = Math.max(0,
+      (agora.getHours() - horaInicio) * 3600 +
+      agora.getMinutes() * 60 +
+      agora.getSeconds()
+    );
+    let contadorBase = (DESPERDICIO_DIA / 86400) * segundosDesde8h;
+    const taxaPorSeg = DESPERDICIO_DIA / 86400;
+
+    function formatContador(v) {
+      return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    const elCounter = document.getElementById('live-counter');
+    function tickContador() {
+      contadorBase += taxaPorSeg / 10; // atualiza 10x/seg
+      elCounter.textContent = formatContador(contadorBase);
+    }
+    setInterval(tickContador, 100);
+
+    // Anima as barras do hero ao carregar
+    setTimeout(() => {
+      document.getElementById('bar-manual').style.width = '40%';
+      document.getElementById('bar-valor').style.width  = '60%';
+    }, 400);
+
+    // ── UTILITÁRIO DE FORMATAÇÃO ──
+    function formatBRL(value) {
+      return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+    }
+
+    // ── VALIDAÇÃO ──
+    function getInputs() {
+      const n = parseFloat(document.getElementById('input-n').value);
+      const s = parseFloat(document.getElementById('input-s').value);
+      const p = parseFloat(document.getElementById('input-p').value);
+      let valid = true;
+
+      ['n','s','p'].forEach(f => {
+        document.getElementById('input-' + f).classList.remove('error');
+        document.getElementById('err-' + f).style.display = 'none';
+      });
+
+      if (!n || n <= 0) { document.getElementById('input-n').classList.add('error'); document.getElementById('err-n').style.display = 'block'; valid = false; }
+      if (!s || s <= 0) { document.getElementById('input-s').classList.add('error'); document.getElementById('err-s').style.display = 'block'; valid = false; }
+      if (!p || p <= 0) { document.getElementById('input-p').classList.add('error'); document.getElementById('err-p').style.display = 'block'; valid = false; }
+
+      return valid ? { n, s, p } : null;
+    }
+
+    // ── WEBHOOK ──
+    async function dispararWebhook(url, payload) {
+      if (!url || url.startsWith('COLE_AQUI')) return;
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          mode: 'no-cors'
+        });
+      } catch (e) {
+        console.warn('[Webhook] Falha silenciosa:', e);
+      }
+    }
+
+    // ── CALCULAR ──
+    async function calcular() {
+      const inputs = getInputs();
+      if (!inputs) return;
+      const { n, s, p } = inputs;
+
+      const btn = document.getElementById('btn-calcular');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const custoTotal  = n * s;
+      const desperdicio = custoTotal * 0.40;
+      const porProjeto  = desperdicio / p;
+
+      const payload = {
+        email: leadEmail,
+        profissionais: n,
+        custo_por_profissional: s,
+        projetos_por_mes: p,
+        custo_total_equipe: custoTotal,
+        desperdicio_mensal: desperdicio,
+        desperdicio_por_projeto: porProjeto,
+        timestamp: new Date().toISOString()
+      };
+
+      dispararWebhook(WEBHOOK_URL_CALCULAR, payload);
+
+      await new Promise(r => setTimeout(r, 500));
+
+      // Preenche resultados
+      document.getElementById('res-desperdicio').textContent = formatBRL(desperdicio);
+
+      document.getElementById('res-context').innerHTML =
+        `Sua equipe de <strong>${n} profissional${n > 1 ? 'is' : ''}</strong> custa ` +
+        `<strong>${formatBRL(custoTotal)}/mês</strong> — e <strong>${formatBRL(desperdicio)}</strong> ` +
+        `disso vai embora em tarefas que o Woca resolve automaticamente.`;
+
+      document.getElementById('res-custo-total').textContent = formatBRL(custoTotal);
+      document.getElementById('res-custo-desc').textContent  = `${n} profissional${n > 1 ? 'is' : ''} × ${formatBRL(s)}/mês`;
+
+      document.getElementById('res-por-projeto').textContent = formatBRL(porProjeto);
+      document.getElementById('res-projeto-desc').textContent = `distribuído entre ${p} projeto${p > 1 ? 's' : ''}/mês`;
+
+      let insightHtml = '';
+      if (desperdicio < 2000) {
+        insightHtml = `Mesmo sendo um time enxuto, <strong>${formatBRL(desperdicio)}/mês</strong> desperdiçados representam <strong>${formatBRL(desperdicio * 12)}/ano</strong>. É budget para crescer — não para perder com trabalho manual.`;
+      } else if (desperdicio < 8000) {
+        insightHtml = `<strong>${formatBRL(desperdicio)}/mês</strong> em desperdício é, na prática, o custo de um profissional inteiro fazendo trabalho que uma ferramenta resolve. Imagine redirecionar esse tempo para projetos de maior valor.`;
+      } else {
+        insightHtml = `<strong>${formatBRL(desperdicio)}/mês</strong> já é uma decisão estratégica: ou você automatiza, ou continua financiando manualmente o que a tecnologia resolve. Em 1 ano, o impacto chega a <strong>${formatBRL(desperdicio * 12)}</strong>.`;
+      }
+      document.getElementById('res-insight').innerHTML = insightHtml;
+
+      const waMsg = encodeURIComponent(
+        `Olá, Felipe! Fiz o diagnóstico na calculadora do Woca e vi que minha equipe desperdiça ${formatBRL(desperdicio)}/mês. Gostaria de entender como o Woca pode ajudar.`
+      );
+      document.getElementById('btn-whatsapp').href =
+        `https://wa.me/${WHATSAPP_NUMERO}?text=${waMsg}`;
+
+      // Mostra resultados, esconde empty state
+      document.getElementById('empty-state').classList.add('hidden');
+      document.getElementById('results-filled').classList.add('visible');
+
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+
+    // ── WEBHOOK WHATSAPP ──
+    function dispararWebhookWhatsapp() {
+      dispararWebhook(WEBHOOK_URL_WHATSAPP, {
+        email: leadEmail,
+        desperdicio_exibido: document.getElementById('res-desperdicio').textContent,
+        timestamp: new Date().toISOString(),
+        acao: 'clicou_whatsapp'
+      });
+    }
+
+    // ── RESET ──
+    function resetForm() {
+      document.getElementById('results-filled').classList.remove('visible');
+      document.getElementById('empty-state').classList.remove('hidden');
+      ['input-n','input-s','input-p'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    // Enter nos campos
+    ['input-n','input-s','input-p'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') calcular();
+      });
+    });
+  </script>
+</body>
+</html>
