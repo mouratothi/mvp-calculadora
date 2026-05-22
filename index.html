@@ -31,7 +31,7 @@
     header {
       background: var(--white);
       border-bottom: 1px solid var(--border);
-      padding: 16px 32px;
+      padding: 18px 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -39,7 +39,7 @@
       top: 0;
       z-index: 100;
     }
-    .logo { height: 44px; width: auto; }
+    .logo { height: 58px; width: auto; }
 
     /* ── HERO: 2 colunas ── */
     .hero {
@@ -633,6 +633,74 @@
     }
     .recalc-link:hover { color: var(--black); }
 
+    /* ── METODOLOGIA ── */
+    .method-section {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 64px 32px;
+    }
+    .method-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .method-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      position: sticky;
+      top: 100px;
+    }
+    .method-stat-num {
+      font-size: 5rem;
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: -.04em;
+      line-height: 1;
+    }
+    .method-stat-label {
+      font-size: .78rem;
+      color: var(--mid);
+      line-height: 1.55;
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+    }
+    .method-text {
+      padding-top: 6px;
+    }
+    .method-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--black);
+      letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+    .method-text p {
+      font-size: .9rem;
+      color: #4B5563;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .method-text p:last-of-type { margin-bottom: 0; }
+    .method-sources {
+      font-size: .75rem !important;
+      color: #A1A1AA !important;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 880px) {
+      .method-inner { grid-template-columns: 1fr; gap: 28px; }
+      .method-stat { position: static; flex-direction: row; align-items: center; gap: 16px; }
+      .method-stat-num { font-size: 3.5rem; }
+      .method-stat-label { border-left: 3px solid var(--orange); }
+    }
+
     /* ── HOW IT WORKS ── */
     .how-section {
       background: var(--black);
@@ -892,6 +960,40 @@
     </div>
   </section>
 
+  <!-- ── METODOLOGIA ── -->
+  <section class="method-section">
+    <div class="method-inner">
+
+      <div class="method-stat">
+        <span class="method-stat-num">40%</span>
+        <span class="method-stat-label">dos custos e do tempo em projetos de engenharia e MEP são desperdiçados em tarefas manuais e documentação ineficiente</span>
+      </div>
+
+      <div class="method-text">
+        <h3 class="method-title">A matemática por trás do desperdício</h3>
+        <p>
+          O mercado de engenharia continua perdendo dinheiro na prancheta. Segundo estudos globais
+          de eficiência no setor, como os levantamentos da McKinsey e os relatórios SmartMarket
+          da Dodge Construction Network, cerca de 40% dos custos e do tempo em projetos de
+          engenharia e MEP são drenados por processos ineficientes de documentação e tarefas
+          manuais repetitivas.
+        </p>
+        <p>
+          O diagnóstico acima reflete exatamente esse gargalo: ele converte a capacidade do seu
+          time em reais, mostrando quanto da sua folha de pagamento atual está financiando um
+          "trabalho de cadista" que o Woca já resolve de forma 100% automatizada. A questão
+          estratégica não é <em>se</em> a sua empresa sofre com esse desperdício, mas por quanto
+          tempo mais você vai aceitar pagar por ele.
+        </p>
+        <p class="method-sources">
+          Fontes: McKinsey Global Institute, <em>Reinventing Construction</em> (2017);
+          Dodge Construction Network, <em>SmartMarket Report — MEP BIM</em> (2024).
+        </p>
+      </div>
+
+    </div>
+  </section>
+
   <!-- ── COMO FUNCIONA ── -->
   <section class="how-section">
     <div class="how-inner">
@@ -919,7 +1021,7 @@
     <img
       src="https://i.ibb.co/whcj7p5t/woca-by-ocalev1.png"
       alt="Woca by Ocalev"
-      style="height:22px;"
+      style="height:44px;"
     />
     <p>
       © 2026 Ocalev. Todos os direitos reservados.<br>
